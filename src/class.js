@@ -13,6 +13,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.option = option != null ? option : {
         name: ""
       };
+      this.uox = __bind(this.uox, this);
+
       this.getAuthorizeUrl = __bind(this.getAuthorizeUrl, this);
 
       this.saveAccessToken = __bind(this.saveAccessToken, this);
@@ -221,7 +223,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     TypetalkAPI.prototype.fetch_ = function(method, url, option, reauth) {
-      var access_token, opt, res;
+      var access_token, opt, res,
+        _this = this;
       if (option == null) option = {};
       access_token = this.getCredencial_("access_token");
       if (!(access_token != null)) throw new Error("Please call authorize");
@@ -234,7 +237,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         };
         option.payload && (opt.payload = option.payload);
         option.contentType && (opt.contentType = option.contentType);
-        res = UrlFetchApp.fetch(url, opt);
+        if (reauth) {
+          res = this.uox(function() {
+            return UrlFetchApp.fetch(url, opt);
+          });
+        } else {
+          res = UrlFetchApp.fetch(url, opt);
+        }
         return JSON.parse(res.getContentText());
       } catch (e) {
         Logger.log(e);
@@ -245,50 +254,59 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     TypetalkAPI.prototype.reauthorize_ = function() {
-      var refreshToken, res;
+      var refreshToken, res,
+        _this = this;
       refreshToken = this.getCredencial_("refresh_token");
       if (!(refreshToken != null)) {
         throw new Error("does not have refresh token, Please call authorize");
       }
-      res = UrlFetchApp.fetch("https://typetalk.in/oauth2/access_token", {
-        method: "post",
-        payload: {
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          refresh_token: refreshToken,
-          grant_type: "refresh_token"
-        }
+      res = this.uox(function() {
+        return UrlFetchApp.fetch("https://typetalk.in/oauth2/access_token", {
+          method: "post",
+          payload: {
+            client_id: _this.clientId,
+            client_secret: _this.clientSecret,
+            refresh_token: refreshToken,
+            grant_type: "refresh_token"
+          }
+        });
       });
       this.prop.setProperty("TypetalkApp_credencial" + this.option.name, res.getContentText());
       return JSON.parse(res.getContentText()).access_token;
     };
 
     TypetalkAPI.prototype.authorize = function() {
-      var res;
-      res = UrlFetchApp.fetch("https://typetalk.in/oauth2/access_token", {
-        method: "post",
-        payload: {
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          scope: this.scopes.join(","),
-          grant_type: "client_credentials"
-        }
+      var res,
+        _this = this;
+      res = this.uox(function() {
+        return UrlFetchApp.fetch("https://typetalk.in/oauth2/access_token", {
+          method: "post",
+          payload: {
+            client_id: _this.clientId,
+            client_secret: _this.clientSecret,
+            scope: _this.scopes.join(","),
+            grant_type: "client_credentials"
+          }
+        });
       });
       this.prop.setProperty("TypetalkApp_credencial" + this.option.name, res.getContentText());
       return JSON.parse(res.getContentText()).access_token;
     };
 
     TypetalkAPI.prototype.saveAccessToken = function(code) {
-      var res;
-      res = UrlFetchApp.fetch("https://typetalk.in/oauth2/access_token", {
-        method: "post",
-        payload: {
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          redirect_uri: this.prop.getProperty("TypetalkApp_redirectURI" + this.option.name),
-          code: code,
-          grant_type: "authorization_code"
-        }
+      var res,
+        _this = this;
+      res = this.uox(function() {
+        return UrlFetchApp.fetch("https://typetalk.in/oauth2/access_token", {
+          method: "post",
+          payload: {
+            client_id: _this.clientId,
+            client_secret: _this.clientSecret,
+            redirect_uri: _this.prop.getProperty("TypetalkApp_redirectURI" + _this.option.name),
+            code: code,
+            grant_type: "authorization_code"
+          }
+        });
       });
       this.prop.setProperty("TypetalkApp_credencial" + this.option.name, res.getContentText());
       return JSON.parse(res.getContentText()).access_token;
@@ -315,6 +333,21 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       if (optArg) builder.withArgument("param", JSON.stringify(optArg));
       stateToken = builder.createToken();
       return "" + url + stateToken;
+    };
+
+    TypetalkAPI.prototype.uox = function(f, retry) {
+      var count;
+      if (retry == null) retry = 3;
+      count = 0;
+      while (true) {
+        try {
+          return f();
+        } catch (e) {
+          if (count > retry) throw e;
+          Utilities.sleep(1000);
+          count++;
+        }
+      }
     };
 
     return TypetalkAPI;

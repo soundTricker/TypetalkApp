@@ -1,26 +1,26 @@
 /**
- * @type {string}
+ * @type {String}
  */
 var SCOPE_MY = "my";
 /**
- * @type {string}
+ * @type {String}
  */
 var SCOPE_TOPIC_POST = "topic.post";
 /**
- * @type {string}
+ * @type {String}
  */
 var SCOPE_TOPIC_READ = "topic.read";
 
 /**
  * Create Typetalk API Client.
- * @param {string} clientId client id.
- * @param {string} clientSecret client secret.
+ * @param {String} clientId client id.
+ * @param {String} clientSecret client secret.
  * @param {[]} scopes scope array.
  * @param {Object} option optional you can set name property for set instance name.
  * @return {TypetalkApp} typetalk API Client instance
  */
 function create(clientId, clientSecret, scopes, option) {
-  
+
   if(clientId == null
      || clientSecret == null
      || scopes == null
@@ -28,7 +28,7 @@ function create(clientId, clientSecret, scopes, option) {
     ) {
     throw new Error("parameters is missing.");
   }
-  
+
   return new TypetalkAPI(clientId, clientSecret, scopes, option);
 }
 
@@ -37,7 +37,7 @@ function create(clientId, clientSecret, scopes, option) {
  * @return {Boolean} if already authorized, return true.
  */
 function isAuthorized() {
-  throw new Error("this method is dummy, please call create method before call this method");  
+  throw new Error("this method is dummy, please call create method before call this method");
 }
 
 /**
@@ -45,22 +45,22 @@ function isAuthorized() {
  * @return {Object} authrozation result
  */
 function authorize() {
-  throw new Error("this method is dummy, please call create method before call this method");  
+  throw new Error("this method is dummy, please call create method before call this method");
 }
 
 /**
  * Authorize by your account.
- * @param {string} callback callback function name
+ * @param {String} callback callback function name
  * @param {Object} optArg optional. callback function argument.
- * @return {string} authrozation url
+ * @return {String} authrozation url
  */
 function getAuthorizeUrl(callback, optArg) {
-  throw new Error("this method is dummy, please call create method before call this method");  
+  throw new Error("this method is dummy, please call create method before call this method");
 }
 
 /**
  * Save access token.
- * @param {string} code code
+ * @param {String} code code
  * @return {Object} authorization result
  */
 function saveAccessToken(code) {
@@ -85,7 +85,7 @@ function getTopics() {
 
 /**
  * Get a Topic.
- * @param {Number} topicId
+ * @param {Integer} topicId
  * @return {Object} topic object
  */
 function getTopic(topicId) {
@@ -94,7 +94,7 @@ function getTopic(topicId) {
 
 /**
  * Mark a message favorite.
- * @param {Number} topicId
+ * @param {Integer} topicId
  * @return {Object} result object
  */
 function favoriteTopic(topicId) {
@@ -103,7 +103,7 @@ function favoriteTopic(topicId) {
 
 /**
  * Unmark a message favorite.
- * @param {Number} topicId topic id
+ * @param {Integer} topicId topic id
  * @return {Object} result object
  */
 function unfavoriteTopic(topicId) {
@@ -128,8 +128,8 @@ function openNotifications() {
 
 /**
  * Mark read topic messages.
- * @param {Number} topicId topic id 
- * @param {Number} optPostId optional. post id 
+ * @param {Integer} topicId topic id
+ * @param {Integer} optPostId optional. post id
  * @return {Object} result object
  */
 function saveBookmark(topicId, optPostId) {
@@ -148,7 +148,7 @@ function getMentions(option) {
 
 /**
  * Mark read mention.
- * @param {Number} mentionId
+ * @param {Integer} mentionId
  * @return {Object} result object
  */
 function openMention(mentionId) {
@@ -157,8 +157,8 @@ function openMention(mentionId) {
 
 /**
  * Get a message
- * @param {Number} topicId topic Id
- * @param {Number} postId post id
+ * @param {Integer} topicId topic Id
+ * @param {Integer} postId post id
  * @return {Object} The message object
  */
 function getMessage(topicId, postId) {
@@ -167,8 +167,8 @@ function getMessage(topicId, postId) {
 
 /**
  * Post a message
- * @param {Number} topicId topic Id
- * @param {string} message a message
+ * @param {Integer} topicId topic Id
+ * @param {String} message a message
  * @param {Object} optParams optional parameter
  * @return {Object} The message object
  */
@@ -178,8 +178,8 @@ function postMessage(topicId, message, optParams) {
 
 /**
  * Delete a message
- * @param {Number} topicId topic Id
- * @param {Number} postId post id
+ * @param {Integer} topicId topic Id
+ * @param {Integer} postId post id
  * @return {Object} The message object
  */
 function deleteMessage(topicId, postId) {
@@ -188,8 +188,8 @@ function deleteMessage(topicId, postId) {
 
 /**
  * Mark like a message
- * @param {Number} topicId topic Id
- * @param {Number} postId post id
+ * @param {Integer} topicId topic Id
+ * @param {Integer} postId post id
  * @return {Object} The message object
  */
 function likeMessage(topicId, postId) {
@@ -198,8 +198,8 @@ function likeMessage(topicId, postId) {
 
 /**
  * Unmark like a message
- * @param {Number} topicId topic Id
- * @param {Number} postId post id
+ * @param {Integer} topicId topic Id
+ * @param {Integer} postId post id
  * @return {Object} The message object
  */
 function unlikeMessage(topicId, postId) {
@@ -208,7 +208,7 @@ function unlikeMessage(topicId, postId) {
 
 /**
  * Upload a file
- * @param {Number} topicId topic Id
+ * @param {Integer} topicId topic Id
  * @param {Blob} fileBlob uploaded file
  * @return {Object} result object
  */
@@ -229,7 +229,3 @@ function deleteCredential() {
 function setProperty(prop) {
   throw new Error("this method is dummy, please call create method before call this method");
 }
-
-
-
-
